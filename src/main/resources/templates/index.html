@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>文件上传</title>
+    <style type="text/css">
+        #holder {
+            　　border: 10px dashed #ccc;
+            　　width: 300px;
+            　　min-height: 300px;
+            　　margin: 20px auto;
+        }
+
+        #holder.hover {
+            　　border: 10px dashed #0c0;
+        }
+    </style>
+</head>
+<body>
+<div id="holder"></div>
+<progress id="uploadprogress" min="0" max="100" value="0">0</progress>
+<script type="text/javascript">
+    // 检查是否支持FileReader对象
+    if (typeof FileReader != 'undefined') {
+        var acceptedTypes = {
+            'image/png': true,
+            'image/jpeg': true,
+            'image/gif': true
+        };
+        if (acceptedTypes[document.getElementById('holder').files[0].type] === true) {
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                var image = new Image();
+                image.src = event.target.result;
+                image.width = 100;
+                document.body.appendChild(image);
+            };
+            reader.readAsDataURL(document.getElementById('holder').files[0]);
+        }
+    }
+
+
+    // 检查浏览器是否支持拖放上传。
+    if('draggable' in document.createElement('span')){
+        var holder = document.getElementById('holder');
+        holder.ondragover = function () { this.className = 'hover'; return false; };
+        holder.ondragend = function () { this.className = ''; return false; };
+        holder.ondrop = function (event) {
+            event.preventDefault();
+            var fs = event.dataTransfer.files;
+            var formData = new FormData();
+            // 建立一个upload表单项，值为上传的文件
+            formData.append('upload', document.getElementById('upload').fs[0]);
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', $(this).attr('action'));
+            xhr.upload.onprogress = function (event) {
+                if (event.lengthComputable) {
+                    var complete = (event.loaded / event.total * 100 | 0);
+                    var progress = document.getElementById('uploadprogress');
+                    progress.value = progress.innerHTML = complete;
+                }
+            };
+            // 定义上传完成后的回调函数
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    console.log('上传成功');
+                } else {
+                    console.log('出错了');
+                }
+            };
+            xhr.send(formData);
+        };
+    }
+</script>
+</body>
+</html>

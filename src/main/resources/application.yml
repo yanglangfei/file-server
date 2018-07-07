@@ -1,0 +1,29 @@
+server:
+  port: 80
+
+
+define:
+  localStoragePath: F:\huya\file\
+  resourceAccessUri: http://localhost:8888/
+  resourcessFdfsUrl: http://47.104.243.201/
+spring:
+  thymeleaf:
+    cache: false
+
+
+
+
+fdfs:
+  soTimeout: 1500
+  connectTimeout: 600
+  thumbImage:             #缩略图生成参数
+    width: 150
+    height: 150
+  pool:
+    jmxEnabled: false
+  trackerList:            #TrackerList参数,支持多个
+    - 47.104.243.201:22122
+
+
+
+
